@@ -113,3 +113,7 @@
 - 新增多选和批量改层级、批量改标签，减少重复整理动作。
 - 导入后会补齐资料 ID，方便后续批量操作稳定生效。
 - 下一步：加“批量改科目”和“AI 结果一键归档”的工具。
+
+## 在线访问（安卓端）
+
+https://chouyangceng.github.io/kaoyan-materials-manager/
