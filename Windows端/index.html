@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<title>考研资料管家</title>
+<style>
+body{font-family:system-ui;margin:0;background:#f5f7fb;color:#172033}
+main{max-width:720px;margin:auto;padding:16px}
+h1{font-size:24px}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+button,input,select,textarea{font:inherit;padding:10px;border:1px solid #ccd4e0;border-radius:8px}
+button{background:#2563eb;color:#fff;border:0}
+.card{background:#fff;padding:14px;margin:12px 0;border-radius:12px;box-shadow:0 1px 5px #0001}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.item{padding:10px;border-bottom:1px solid #eee}
+.muted{color:#64748b;font-size:13px}
+.full{width:100%;box-sizing:border-box}
+.layout{display:grid;grid-template-columns:240px 1fr;gap:12px;align-items:start;margin-top:8px}
+.side{background:#f8fbff;border:1px solid #dbe5f0;border-radius:10px;padding:10px;max-height:560px;overflow:auto}
+.tree-group{margin:8px 0}
+.tree-node{margin-left:12px;border-left:1px solid #e5edf7;padding-left:10px}
+.tree-leaf{margin:4px 0;color:#334155;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<h1>考研资料管家</h1>
+<nav>
+<button onclick="show('资料')">资料</button>
+<button onclick="show('进度')">进度</button>
+<button onclick="show('复盘')">复盘</button>
+<button onclick="show('AI')">AI</button>
+<button onclick="sync()">导出同步包</button>
+<button onclick="exportClassList()">导出分类清单</button>
+<button onclick="document.getElementById('importFile').click()">导入同步包</button>
+<input id="importFile" type="file" accept=".json" hidden onchange="importPack(event)">
+</nav>
+<section id="资料" class="card">
+<h2>新增资料</h2>
+<div class="row">
+<input id="name" placeholder="资料名称">
+<select id="subject"><option>政治</option><option>英语</option><option>数学</option><option>专业课</option><option>公共资料</option></select>
+<input id="type" placeholder="模块，如真题/讲义">
+<input id="level" placeholder="层级，如 英语/阅读/细节题">
+<input id="tags" placeholder="标签，如 高频, 易错, 2026">
+<input id="files" type="file" multiple accept=".doc,.docx,.ppt,.pptx,.pdf,.xls,.xlsx,.csv,.txt,.md,image/*,.zip,.rar,.7z">
+<button onclick="add()">加入收件箱</button>
+</div>
+<div class="muted">可附加 Word、PPT、PDF、图片、表格、文本和压缩包等常见资料，附件只记录元数据。</div>
+<div class="row" style="margin-top:8px"><input id="filter" class="full" placeholder="筛选资料、层级或标签" oninput="render()"></div>
+<div class="row" style="margin-top:8px">
+<button onclick="selectVisible(true)">全选当前筛选</button>
+<button onclick="selectVisible(false)">取消当前筛选</button>
+<button onclick="batchEditLevel()">批量改层级</button>
+<button onclick="batchEditTags()">批量改标签</button>
+<button onclick="clearSelection()">清空选择</button>
+</div>
+<div class="layout">
+<aside class="side">
+<div class="muted">目录树</div>
+<div id="tree"></div>
+</aside>
+<div>
+<div id="stats" class="muted"></div>
+<div id="list"></div>
+</div>
+</div>
+</section>
+<section id="进度" class="card" hidden>
+<h2>学习进度</h2>
+<textarea id="progress" class="full" rows="8" placeholder="记录各科阶段、目标、完成度和下一步行动"></textarea>
+<button onclick="save('progress')">保存进度</button>
+</section>
+<section id="复盘" class="card" hidden>
+<h2>复盘记录</h2>
+<textarea id="review" class="full" rows="8" placeholder="本周完成、问题、原因、下周三件事"></textarea>
+<button onclick="save('review')">保存复盘</button>
+</section>
+<section id="AI" class="card" hidden>
+<h2>DeepSeek AI</h2>
+<div class="row">
+<input id="aiBase" class="full" placeholder="API 地址" value="https://api.deepseek.com">
+<input id="aiModel" class="full" placeholder="模型" value="deepseek-v4-flash">
+<input id="aiApiKey" class="full" type="password" placeholder="API Key">
+</div>
+<div class="row" style="margin-top:8px">
+<button onclick="saveAI()">保存配置</button>
+<button onclick="runAI('mindmap')">思维导图汇总</button>
+<button onclick="runAI('plan')">学习建议</button>
+<button onclick="runAI('review')">复盘提纲</button>
+<button onclick="copyAI()">复制结果</button>
+</div>
+<textarea id="aiNote" class="full" rows="4" placeholder="可补充要求，例如：按政治/英语/数学拆分，输出 Mermaid mindmap"></textarea>
+<textarea id="aiOut" class="full" rows="12" readonly placeholder="这里显示 DeepSeek 返回结果"></textarea>
+<div class="muted">AI 配置只保存在本机，不进入同步包。</div>
+</section>
+<p class="muted">数据保存在本机。导入同步包后，两端资料、进度和复盘会合并。</p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
